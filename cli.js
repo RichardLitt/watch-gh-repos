@@ -54,6 +54,9 @@ Promise.try(() => {
       console.log('You must run this in a git repo, or provide an argument.')
       process.exit(1)
     })
+  // Allow people to have one repo without the flag
+  } else if (cli.input.length !== 0 && _.isEmpty(cli.flags)) {
+    cli.flags['repo'] = cli.input[0]
   }
 }).then(() => watchGHRepos(cli.flags))
 .each(function (response) {
