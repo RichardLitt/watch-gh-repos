@@ -1,6 +1,6 @@
 # watch-gh-repos
 
-> Watch or unwatch GitHub repositories
+> Watch, unwatch, or ignore GitHub repositories
 
 ## Install
 
@@ -10,9 +10,38 @@
 
 ## Usage
 
-You will need a token. You can pass this token in through the command line using the `--token` flag, or by setting it in your env as `WATCH_GH_REPOS`.
+```js
+const watchGhRepos = require('watch-gh-repos')
+
+watchGHRepos({'watch': 'RichardLitt/watch-gh-repos', 'token': someToken})
+ .then((res) => {
+   console.log(res) // Watch all the things!
+ })
+```
+
+### Options
+
+- `-g,` `--get` Get repo watching details
+- `-i,` `--ignore` Ignore notifications from a repository
+- `-o,` `--org` Specify all repositories from an organization or user
+- `-r,` `--ratelimit` Skip checks making sure GitHub repo is valid (Skips 1 hit per repo)
+- `-t,` `--token` A Personal Access Token for GitHub. You need scopes `notifications` and `repos`.
+- `-u,` `--unwatch` Unwatch instead of watch
+- `-w,` `--watch` Specify a repo
+
+### CLI
+
+You will need a token. You can pass this token in through the command line using the `--token` flag, or by setting it in your env as `WATCH_GH_REPOS`. This token needs the scopes `notifications` and `repos` to be enabled.
+
+#### Install
 
 ```sh
+npm i -g watch-gh-repos
+```
+
+#### Usage 
+```sh
+
 Usage
   $ watch-gh-repos <input> [opts]
 

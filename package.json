@@ -1,7 +1,7 @@
 {
   "name": "watch-gh-repos",
   "version": "1.0.0",
-  "description": "Watch or unwatch GitHub repositories",
+  "description": "Watch, unwatch, or ignore GitHub repositories",
   "main": "src/index.js",
   "dependencies": {
     "bluebird": "^3.5.0",
@@ -19,7 +19,7 @@
   "scripts": {
     "test": "ava test/test.js"
   },
-  "keywords": [],
+  "keywords": ["git", "github", "watch", "unwatch", "ignore", "api", "repos", "repositories", "repository", "organization"],
   "author": "Richard Littauer <richard.littauer@gmail.com> (http://burntfen.com)",
   "contributors": [],
   "license": "MIT"
