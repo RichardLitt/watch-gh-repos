@@ -18,7 +18,7 @@
     "wreck": "^10.0.0"
   },
   "scripts": {
-    "test": "node test/test.js"
+    "test": "ava test/test.js"
   },
   "keywords": [],
   "author": "Richard Littauer <richard.littauer@gmail.com> (http://burntfen.com)",
