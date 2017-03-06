@@ -23,16 +23,16 @@ const cli = meow([`
 
   Examples
     ~/src/RichardLitt/unwatch-gh-repos $ watch-gh-repos
-    Now watching: RichardLitt/unwatch-gh-repos
+    Watched: RichardLitt/unwatch-gh-repos
 
     $ watch-gh-repos RichardLitt/watch-gh-repos
-    Now watching: RichardLitt/watch-gh-repos
+    Watched: RichardLitt/watch-gh-repos
 
     $ watch-gh-repos --unwatch RichardLitt/watch-gh-repos
     Unwatched: RichardLitt/watch-gh-repos
 
     $ watch-gh-repos --org --watch RichardLitt
-    Watching all RichardLitt repos.
+    Watched: RichardLitt/first-repo
     ...
 `], {
   string: ['get', 'ignore', 'watch', 'token', 'unwatch'],

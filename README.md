@@ -13,21 +13,30 @@
 You will need a token. You can pass this token in through the command line using the `--token` flag, or by setting it in your env as `WATCH_GH_REPOS`.
 
 ```sh
-$ watch-gh-repos RichardLitt/watch-gh-repos
-Now watching: RichardLitt/watch-gh-repos
+Usage
+  $ watch-gh-repos <input> [opts]
 
-$ watch-gh-repos RichardLitt/watch-gh-repos --unwatch
-Unwatched: RichardLitt/watch-gh-repos
+Options
+  -g, --get Get repo watching details
+  -i, --ignore Ignore notifications from a repository
+  -o, --org Specify all repositories from an organization or user
+  -r, --ratelimit Skip checks making sure GitHub repo is valid (Skips 1 hit per repo)
+  -t, --token A token
+  -u, --unwatch Unwatch instead of watch
+  -w, --watch Specify a repo
 
-$ watch-gh-repos RichardLitt
-Watching all RichardLitt repos.
-Now watching: RichardLitt/{first-repo}
-Now watching: RichardLitt/{second-repo}
+Examples
+  ~/src/RichardLitt/unwatch-gh-repos $ watch-gh-repos
+  Watched: RichardLitt/unwatch-gh-repos
 
-$ watch-gh-repos RichardLitt --unwatch
-Unwatching all RichardLitt repos.
-Unwatched: RichardLitt/{first-repo}
-Unwatched: RichardLitt/{second-repo}
+  $ watch-gh-repos RichardLitt/watch-gh-repos
+  Watched: RichardLitt/watch-gh-repos
+
+  $ watch-gh-repos --unwatch RichardLitt/watch-gh-repos
+  Unwatched: RichardLitt/watch-gh-repos
+
+  $ watch-gh-repos --org --watch RichardLitt
+  Watched: RichardLitt/first-repo
 ```
 
 ## Contribute
