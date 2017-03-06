@@ -19,10 +19,8 @@ const cli = meow([`
     -u, --unwatch Unwatch instead of watch
 
   Examples
-    $ pwd
-    ~/src/RichardLitt/unwatch-gh-repos
-    $ watch-gh-repos
-    Now watching: unwatch-gh-repos
+    ~/src/RichardLitt/unwatch-gh-repos $ watch-gh-repos
+    Now watching: RichardLitt/unwatch-gh-repos
 
     $ watch-gh-repos RichardLitt/watch-gh-repos
     Now watching: RichardLitt/watch-gh-repos
@@ -30,15 +28,9 @@ const cli = meow([`
     $ watch-gh-repos RichardLitt/watch-gh-repos --unwatch
     Unwatched: RichardLitt/watch-gh-repos
 
-    $ watch-gh-repos RichardLitt
+    $ watch-gh-repos --org RichardLitt
     Watching all RichardLitt repos.
-    Now watching: RichardLitt/{first-repo}
-    Now watching: RichardLitt/{second-repo}
-
-    $ watch-gh-repos RichardLitt --unwatch
-    Unwatching all RichardLitt repos.
-    Unwatched: RichardLitt/{first-repo}
-    Unwatched: RichardLitt/{second-repo}
+    ...
 `], {
   alias: {
     o: 'org',
