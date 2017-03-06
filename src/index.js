@@ -17,11 +17,17 @@ module.exports = function sortFunctions (opts) {
     token: opts.token || process.env.GITHUB_OGN_TOKEN
   })
 
+  // TODO Check if the repository is a valid repository
+  console.log('opts: ', opts);
+
   function unwatchRepo (repo) {
-    return Promise.resolve(gh.fromUrl(`/repos/${repo}/subscription`).remove()).then((data) => {
+    return Promise.resolve().then(() => {
+      return gh.repos(`${repo}`).subscription.remove()
+    }).then((data) => {
+      console.log('Response from unwatching:', data)
       return statusWrapper('unwatched', repo)
     }).catch((err) => {
-      return new Error(`Failed to unwatch ${repo}.`)
+      console.log('Unwatching error', err)
     })
   }
 
