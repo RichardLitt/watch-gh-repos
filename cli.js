@@ -41,36 +41,38 @@ const cli = meow([`
   }
 })
 
-Promise.try(() => {
-  if (cli.input.length === 0 && _.isEmpty(cli.flags)) {
-    return Promise.try(() => {
-      return pify(gitconfig)(process.cwd())
-    }).then((config) => {
-      if (config && config.remote && config.remote.origin && config.remote.origin.url) {
-        // TODO Fix this super brittle thing you've got going on here.
-        cli.flags['repo'] = config.remote.origin.url.split(':')[1].split('.git')[0].split('/')
-      }
-    }).catch((err) => {
-      console.log('You must run this in a git repo, or provide an argument.')
-      process.exit(1)
-    })
-  // Allow people to have one repo without the flag
-  } else if (cli.input.length !== 0 && _.isEmpty(cli.flags)) {
-    cli.flags['repo'] = cli.input[0]
-  }
-}).then(() => watchGHRepos(cli.flags))
-.then((data) => {
-  console.log(data)
-})
-// .each(function (response) {
-//   switch (response.status) {
-//     case 'unwatched':
-//       console.log(`Unwatched: ${response.repo}`)
-//       break
-//     case 'watched':
-//       console.log(`Now watching: ${response.repo}`)
-//       break
-//     default:
-//       console.log('Error: ', response)
-//   }
-// })
+if (cli.input.length === 0 && _.isEmpty(cli.flags)) {
+  pify(gitconfig)(process.cwd())
+  .then(config => {
+    if (config && config.remote && config.remote.origin && config.remote.origin.url) {
+      var url = config.remote.origin.url
+      return url.match(/([^/:]+\/[^/.]+)(\.git)?$/)[1]
+    }
+  }).then((res) => {
+    cli.flags['repo'] = res
+    getResponse(cli.flags)
+  }).catch((err) => {
+    console.log('You must run this in a git repo, or provide an argument.')
+  })
+} else if (cli.input.length !== 0 && _.isEmpty(cli.flags)) {
+  cli.flags['repo'] = cli.input[0]
+  getResponse(cli.flags)
+}
+
+function getResponse (opts) {
+  watchGHRepos(opts).then((data) => {
+    console.log(data)
+  })
+  // .each(function (response) {
+  //   switch (response.status) {
+  //     case 'unwatched':
+  //       console.log(`Unwatched: ${response.repo}`)
+  //       break
+  //     case 'watched':
+  //       console.log(`Now watching: ${response.repo}`)
+  //       break
+  //     default:
+  //       console.log('Error: ', response)
+  //   }
+  // })
+}
