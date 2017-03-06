@@ -1,89 +1,130 @@
 const githubRepos = require('github-repositories')
+const getGithubUser = require('get-github-user')
 const fs = require('fs')
 const Promise = require('bluebird')
 const _ = require('lodash')
 const Octokat = require('octokat')
 
-function statusWrapper (status, repo) {
-  return [{
-    status: status,
-    repo: repo
-  }]
-}
-
 module.exports = function sortFunctions (opts) {
+  const token = opts.token || process.env.WATCH_GH_REPOS
+  var validOpts = null
+
   // TODO Throw error if wrong token specified
   // TODO Does this have to be in here? Would be good if I could export the individual functions
   const gh = new Octokat({
-    token: opts.token || process.env.GITHUB_OGN_TOKEN
+    token: token
   })
 
+  // Could probably be extracted into it's own module
+  function isGitHubRepo(repo) {
+    if (opts.ratelimit) {
+      return repo
+    }
+    return gh.repos(repo).fetch()
+    .then((data) => data.fullName)
+    .catch((err) => {
+      throw new Error(`${repo} is not a valid GitHub repo!`)
+    })
+  }
+
+  function getRepo (repo) {
+    return Promise.resolve(isGitHubRepo(repo))
+    .then((repo) => gh.repos(repo).subscription.fetch())
+    .catch((err) => {
+      throw new Error('Unable to get repo statistics')
+    })
+  }
+
   function ignoreRepo (repo) {
-    return Promise.resolve().then(() => {
-      return gh.repos(`${repo}`).subscription.update({'ignored': true})
-    }).then((data) => {
-      console.log('Response from ignoring:', data)
-      return statusWrapper('ignored', repo)
+    return Promise.resolve(isGitHubRepo(repo))
+    .then((repo) => gh.repos(repo).subscription.add({'ignored': true}))
+    .then((data) => {
+      if (data.ignored) {
+        return `Ignored: ${repo}`
+      } else {
+        throw new Error('API failed to return appropriate response.')
+      }
     }).catch((err) => {
       console.log('Ignoring error', err)
     })
   }
 
   function unwatchRepo (repo) {
-    return Promise.resolve().then(() => {
-      return gh.repos(`${repo}`).subscription.remove()
-    }).then((data) => {
-      console.log('Response from unwatching:', data)
-      return statusWrapper('unwatched', repo)
+    return Promise.resolve(isGitHubRepo(repo))
+    .then((repo) => gh.repos(repo).subscription.remove())
+    .then((data) => {
+      if (data) {
+        return `Unwatched: ${repo}`
+      } else {
+        throw new Error('API failed to return appropriate response.')
+      }
     }).catch((err) => {
-      console.log('Unwatching error', err)
+      throw new Error('Unwatching error', err)
     })
   }
 
   function watchRepo (repo) {
-    return Promise.resolve(gh.fromUrl(`/repos/${repo}/subscription`).create({subscribed: true})).then((data) => {
-      // TODO Watching returns a 'message not found' request. Which shouldn't be happening.
-      // This ought to go here, but it doesn't.
-      return statusWrapper('watched', repo)
+    return Promise.resolve(isGitHubRepo(repo))
+    .then((repo) => gh.repos(repo).subscription.add({'subscribed': true}))
+    .then((data) => {
+       if (data.subscribed) {
+         return `Watched: ${repo}`
+       } else {
+         throw new Error('API failed to return appropriate response.')
+       }
     }).catch((err) => {
-      console.log('Currently unable to tell whether this has been watched or not.')
-      console.log(repo)
-      if (err.status === 404) {
-        return statusWrapper('watched', repo)
-      } else {
-        return new Error(`Failed to watch ${repo}.`)
-      }
+      throw new Error(`Failed to watch ${repo}.`, err)
     })
   }
 
-  // TODO Check if the repository is a valid repository
-  console.log('opts: ', opts);
+  function checkDupeOps (opts) {
+    var val = []
+    if (opts.i) val.push(opts.i)
+    if (opts.w) val.push(opts.w)
+    if (opts.u) val.push(opts.u)
+    if (val.length === 2) {
+      throw new Error("Cannot specify more than one state!")
+    }
+    validOpts = true
+    return val[0]
+  }
+
+  function sortOpts (opts, repoName) {
+    // Check just once that the opts don't have multiples
+    if (!validOpts) { checkDupeOps(opts) }
+
+    // Semi-arbitrary order of preference, disallows multiple flags
+    if (opts.i) {
+      return ignoreRepo((repoName) ? repoName : opts.ignore)
+    } else if (opts.u) {
+      return unwatchRepo((repoName) ? repoName : opts.unwatch)
+    } else if (opts.w) {
+      return watchRepo((repoName) ? repoName : opts.watch)
+    } else {
+      return getRepo((repoName) ? repoName : opts.get)
+    }
+  }
 
   // Init function
-  if (opts.org && opts.repo) {
-    return new Error(`Specify either an org or a repo, not both.`)
-  } else if (opts.org) {
+  if (opts.org) {
+    // Figure out where to grab the key from
+    var val = checkDupeOps(opts)
     // Get all repositories
-    return Promise.resolve(githubRepos(opts.org, {token: opts.token}))
-      .each((data) => {
+    return Promise.resolve(getGithubUser(val))
+      .then((data) => {
+        if (data.length === 0) {
+          throw new Error("Not a valid GitHub user")
+        }
+        return
+      })
+      .then(() => githubRepos(val, {'token': token}))
+      .map((data) => {
         return sortOpts(opts, data.full_name)
       })
       .catch((err) => {
         console.log('Unable to get GitHub repositories', err)
       })
   } else {
-    sortOpts(opts)
+    return sortOpts(opts)
   }
-
-  function sortOpts (opts, repoName) {
-    // Arbitrary order of preference, disallows multiple flags
-    if (opts.i) {
-      return ignoreRepo((repoName) ? repoName : opts.i)
-    } else if (opts.u) {
-      return unwatchRepo((repoName) ? repoName : opts.unwatch)
-    } else {
-      return watchRepo((repoName) ? repoName : opts.repo)
-    }
-  }
-
 }

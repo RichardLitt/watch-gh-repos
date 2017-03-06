@@ -13,11 +13,13 @@ const cli = meow([`
     $ watch-gh-repos <input> [opts]
 
   Options
+    -g, --get Get repo watching details
     -i, --ignore Ignore notifications from a repository
     -o, --org Specify all repositories from an organization or user
-    -r, --repo Specify a repo
+    -r, --ratelimit Skip checks making sure GitHub repo is valid (Skips 1 hit per repo)
     -t, --token A token
     -u, --unwatch Unwatch instead of watch
+    -w, --watch Specify a repo
 
   Examples
     ~/src/RichardLitt/unwatch-gh-repos $ watch-gh-repos
@@ -26,20 +28,23 @@ const cli = meow([`
     $ watch-gh-repos RichardLitt/watch-gh-repos
     Now watching: RichardLitt/watch-gh-repos
 
-    $ watch-gh-repos RichardLitt/watch-gh-repos --unwatch
+    $ watch-gh-repos --unwatch RichardLitt/watch-gh-repos
     Unwatched: RichardLitt/watch-gh-repos
 
-    $ watch-gh-repos --org RichardLitt
+    $ watch-gh-repos --org --watch RichardLitt
     Watching all RichardLitt repos.
     ...
 `], {
-  string: ['ignore', 'org', 'repo', 'token', 'unwatch'],
+  string: ['get', 'ignore', 'watch', 'token', 'unwatch'],
+  boolean: ['org', 'ratelimit'],
   alias: {
+    g: 'get',
     i: 'ignore',
     o: 'org',
-    r: 'repo',
     t: 'token',
-    u: 'unwatch'
+    u: 'unwatch',
+    w: 'watch',
+    r: 'ratelimit'
   }
 })
 
@@ -51,30 +56,23 @@ if (cli.input.length === 0 && _.isEmpty(cli.flags)) {
       return url.match(/([^/:]+\/[^/.]+)(\.git)?$/)[1]
     }
   }).then((res) => {
-    cli.flags['repo'] = res
+    cli.flags['get'] = res
     getResponse(cli.flags)
-  }).catch((err) => {
-    console.log('You must run this in a git repo, or provide an argument.')
   })
 } else if (cli.input.length !== 0 && _.isEmpty(cli.flags)) {
-  cli.flags['repo'] = cli.input[0]
+  cli.flags['get'] = cli.input[0]
+  getResponse(cli.flags)
+} else {
   getResponse(cli.flags)
 }
 
 function getResponse (opts) {
-  watchGHRepos(opts).then((data) => {
-    console.log(data)
+  return Promise.resolve().then(() => watchGHRepos(opts))
+  .then((data) => {
+    if (_.isArray(data)) {
+      _.forEach(data, (datum) => console.log(datum))
+    } else {
+      console.log(data)
+    }
   })
-  // .each(function (response) {
-  //   switch (response.status) {
-  //     case 'unwatched':
-  //       console.log(`Unwatched: ${response.repo}`)
-  //       break
-  //     case 'watched':
-  //       console.log(`Now watching: ${response.repo}`)
-  //       break
-  //     default:
-  //       console.log('Error: ', response)
-  //   }
-  // })
 }
