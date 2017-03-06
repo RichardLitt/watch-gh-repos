@@ -13,6 +13,7 @@ const cli = meow([`
     $ watch-gh-repos <input> [opts]
 
   Options
+    -i, --ignore Ignore notifications from a repository
     -o, --org Specify all repositories from an organization or user
     -r, --repo Specify a repo
     -t, --token A token
@@ -32,8 +33,9 @@ const cli = meow([`
     Watching all RichardLitt repos.
     ...
 `], {
-  string: ['org', 'repo', 'token', 'unwatch'],
+  string: ['ignore', 'org', 'repo', 'token', 'unwatch'],
   alias: {
+    i: 'ignore',
     o: 'org',
     r: 'repo',
     t: 'token',

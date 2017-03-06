@@ -13,12 +13,21 @@ function statusWrapper (status, repo) {
 
 module.exports = function sortFunctions (opts) {
   // TODO Throw error if wrong token specified
+  // TODO Does this have to be in here? Would be good if I could export the individual functions
   const gh = new Octokat({
     token: opts.token || process.env.GITHUB_OGN_TOKEN
   })
 
-  // TODO Check if the repository is a valid repository
-  console.log('opts: ', opts);
+  function ignoreRepo (repo) {
+    return Promise.resolve().then(() => {
+      return gh.repos(`${repo}`).subscription.update({'ignored': true})
+    }).then((data) => {
+      console.log('Response from ignoring:', data)
+      return statusWrapper('ignored', repo)
+    }).catch((err) => {
+      console.log('Ignoring error', err)
+    })
+  }
 
   function unwatchRepo (repo) {
     return Promise.resolve().then(() => {
@@ -47,26 +56,34 @@ module.exports = function sortFunctions (opts) {
     })
   }
 
+  // TODO Check if the repository is a valid repository
+  console.log('opts: ', opts);
+
+  // Init function
   if (opts.org && opts.repo) {
     return new Error(`Specify either an org or a repo, not both.`)
-  }
-
-  // TODO Sort if an org or user was specified
-  if (opts.org) {
+  } else if (opts.org) {
+    // Get all repositories
     return Promise.resolve(githubRepos(opts.org, {token: opts.token}))
       .each((data) => {
-        return (opts.u) ? unwatchRepo(data.full_name) : watchRepo(data.full_name)
-      })
-      .then((res) => {
-        return []
+        return sortOpts(opts, data.full_name)
       })
       .catch((err) => {
         console.log('Unable to get GitHub repositories', err)
       })
+  } else {
+    sortOpts(opts)
   }
 
-  return (opts.u) ? unwatchRepo(opts.unwatch) : watchRepo(opts.repo)
-
-  // This works at the moment
+  function sortOpts (opts, repoName) {
+    // Arbitrary order of preference, disallows multiple flags
+    if (opts.i) {
+      return ignoreRepo((repoName) ? repoName : opts.i)
+    } else if (opts.u) {
+      return unwatchRepo((repoName) ? repoName : opts.unwatch)
+    } else {
+      return watchRepo((repoName) ? repoName : opts.repo)
+    }
+  }
 
 }
