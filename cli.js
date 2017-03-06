@@ -32,6 +32,7 @@ const cli = meow([`
     Watching all RichardLitt repos.
     ...
 `], {
+  string: ['org', 'repo', 'token', 'unwatch'],
   alias: {
     o: 'org',
     r: 'repo',
