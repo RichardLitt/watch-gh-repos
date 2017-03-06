@@ -59,15 +59,18 @@ Promise.try(() => {
     cli.flags['repo'] = cli.input[0]
   }
 }).then(() => watchGHRepos(cli.flags))
-.each(function (response) {
-  switch (response.status) {
-    case 'unwatched':
-      console.log(`Unwatched: ${response.repo}`)
-      break
-    case 'watched':
-      console.log(`Now watching: ${response.repo}`)
-      break
-    default:
-      console.log('Error: ', response)
-  }
+.then((data) => {
+  console.log(data)
 })
+// .each(function (response) {
+//   switch (response.status) {
+//     case 'unwatched':
+//       console.log(`Unwatched: ${response.repo}`)
+//       break
+//     case 'watched':
+//       console.log(`Now watching: ${response.repo}`)
+//       break
+//     default:
+//       console.log('Error: ', response)
+//   }
+// })
