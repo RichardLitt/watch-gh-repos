@@ -59,7 +59,7 @@ module.exports = function sortFunctions (opts) {
       })
   }
 
-  return (opts.u) ? unwatchRepo(opts.repo) : watchRepo(opts.repo)
+  return (opts.u) ? unwatchRepo(opts.unwatch) : watchRepo(opts.repo)
 
   // This works at the moment
 
