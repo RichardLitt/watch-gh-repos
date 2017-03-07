@@ -2,6 +2,8 @@
 
 > Watch, unwatch, or ignore GitHub repositories
 
+This tool allows you to automatically set the 'Watch this repo' command, normally done through the GitHub.com user interface, programmatically, either from your CLI or from your JavaScript code. This is ideal in cases where you have dozens of repos to watch or unwatch, and don't want to cycle through everything to find them. 
+
 ## Install
 
 ```sh
@@ -39,7 +41,7 @@ You will need a token. You can pass this token in through the command line using
 npm i -g watch-gh-repos
 ```
 
-#### Usage 
+#### Usage
 ```sh
 
 Usage
