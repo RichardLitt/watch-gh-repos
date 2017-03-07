@@ -1,6 +1,6 @@
 {
   "name": "watch-gh-repos",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Watch, unwatch, or ignore GitHub repositories",
   "main": "src/index.js",
   "dependencies": {
@@ -36,7 +36,7 @@
   "license": "MIT",
   "repository": "RichardLitt/name-your-contributors",
   "coordinates": [
-    45.5191857,
-    -73.5789112
+    45.5191661,
+    -73.57893159999999
   ]
 }
