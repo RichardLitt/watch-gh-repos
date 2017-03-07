@@ -79,10 +79,11 @@ module.exports = function sortFunctions (opts) {
 
   function checkDupeOps (opts) {
     var val = []
-    if (opts.i) val.push(opts.i)
-    if (opts.w) val.push(opts.w)
-    if (opts.u) val.push(opts.u)
-    if (val.length === 2) {
+    var optNames = ['i', 'w', 'u', 'g']
+    for (var i = 0; i < optNames.length; i++) {
+      if (opts[optNames[i]]) val.push(opts[optNames[i]])
+    }
+    if (val.length >= 2) {
       throw new Error("Cannot specify more than one state!")
     }
     validOpts = true
