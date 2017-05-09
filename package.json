@@ -11,6 +11,9 @@
     "lodash": "^4.17.4",
     "octokat": "^0.6.3"
   },
+  "bin": {
+    "watch-gh-repos": "cli.js"
+  },
   "devDependencies": {
     "ava": "^0.18.2",
     "standard": "^8.6.0",
