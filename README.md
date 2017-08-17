@@ -23,10 +23,11 @@ watchGHRepos({'watch': 'RichardLitt/watch-gh-repos', 'token': someToken})
 
 ### Options
 
-- `-g,` `--get` Get repo watching details
-- `-i,` `--ignore` Ignore notifications from a repository
-- `-o,` `--org` Specify all repositories from an organization or user
-- `-r,` `--ratelimit` Skip checks making sure GitHub repo is valid (Skips 1 hit per repo)
+- `-e`, `--enterprise` Specify the endpoint to be used instead of github.com.
+- `-g`, `--get` Get repo watching details
+- `-i`, `--ignore` Ignore notifications from a repository
+- `-o`, `--org` Specify all repositories from an organization or user
+- `-r`, `--ratelimit` Skip checks making sure GitHub repo is valid (Skips 1 hit per repo)
 - `-t,` `--token` A Personal Access Token for GitHub. You need scopes `notifications` and `repos`.
 - `-u,` `--unwatch` Unwatch instead of watch
 - `-w,` `--watch` Specify a repo
@@ -34,6 +35,8 @@ watchGHRepos({'watch': 'RichardLitt/watch-gh-repos', 'token': someToken})
 ### CLI
 
 You will need a token. You can pass this token in through the command line using the `--token` flag, or by setting it in your env as `WATCH_GH_REPOS`. This token needs the scopes `notifications` and `repos` to be enabled.
+
+If using an enterprise endpoint, use `$GITHUB_ENDPOINT` to change the endpoint, and set up `$WATCH_GH_REPOS_ENTERPRISE` if not passing the token directly.
 
 #### Install
 
@@ -48,11 +51,15 @@ Usage
   $ watch-gh-repos <input> [opts]
 
 Options
+  -e, --enterprise Enable a different endpoint.
+  String or env var $GITHUB_ENDPOINT
   -g, --get Get repo watching details
   -i, --ignore Ignore notifications from a repository
   -o, --org Specify all repositories from an organization or user
-  -r, --ratelimit Skip checks making sure GitHub repo is valid (Skips 1 hit per repo)
-  -t, --token A token
+  -r, --ratelimit Skip checks making sure GitHub repo is valid.
+  Skips 1 hit per repo.
+  -t, --token A token. String or env $WATCH_GH_REPOS,
+  or $WATCH_GH_REPOS_ENTERPRISE with enterprise
   -u, --unwatch Unwatch instead of watch
   -w, --watch Specify a repo
 

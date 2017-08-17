@@ -6,13 +6,19 @@ const _ = require('lodash')
 const Octokat = require('octokat')
 
 module.exports = function sortFunctions (opts) {
-  const token = opts.token || process.env.WATCH_GH_REPOS
+  var token = (opts.enterprise) ? (opts.token || process.env.WATCH_GH_REPOS_ENTERPRISE) : (opts.token || process.env.WATCH_GH_REPOS)
+
+  if (opts.enterprise && typeof opts.enterprise === 'boolean') {
+    opts.enterprise = process.env.GITHUB_ENDPOINT
+  }
+
   var validOpts = null
 
   // TODO Throw error if wrong token specified
   // TODO Does this have to be in here? Would be good if I could export the individual functions
   const gh = new Octokat({
-    token: token
+    token: token,
+    rootURL: opts.enterprise
   })
 
   // Could probably be extracted into it's own module
@@ -65,8 +71,12 @@ module.exports = function sortFunctions (opts) {
 
   function watchRepo (repo) {
     return Promise.resolve(isGitHubRepo(repo))
-    .then((repo) => gh.repos(repo).subscription.add({'subscribed': true}))
+    .then((repo) => {
+      console.log(repo.split('/')[0], repo.split('/')[1])
+      return gh.repos(repo.split('/')[0], repo.split('/')[1]).subscription.fetch()//.add({'subscribed': true})
+    })
     .then((data) => {
+      console.log('Done', data)
        if (data.subscribed) {
          return `Watched: ${repo}`
        } else {
@@ -118,7 +128,7 @@ module.exports = function sortFunctions (opts) {
         }
         return
       })
-      .then(() => githubRepos(val, {'token': token}))
+      .then(() => githubRepos(val, {token: token, endpoint: opts.enterprise}))
       .map((data) => {
         return sortOpts(opts, data.full_name)
       })

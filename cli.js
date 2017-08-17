@@ -13,11 +13,15 @@ const cli = meow([`
     $ watch-gh-repos <input> [opts]
 
   Options
+    -e, --enterprise Enable a different endpoint.
+      String or env var $GITHUB_ENDPOINT
     -g, --get Get repo watching details
     -i, --ignore Ignore notifications from a repository
     -o, --org Specify all repositories from an organization or user
-    -r, --ratelimit Skip checks making sure GitHub repo is valid (Skips 1 hit per repo)
-    -t, --token A token
+    -r, --ratelimit Skip checks making sure GitHub repo is valid.
+      Skips 1 hit per repo.
+    -t, --token A token. String or env $WATCH_GH_REPOS,
+      or $WATCH_GH_REPOS_ENTERPRISE with enterprise
     -u, --unwatch Unwatch instead of watch
     -w, --watch Specify a repo
 
@@ -36,8 +40,9 @@ const cli = meow([`
     ...
 `], {
   string: ['get', 'ignore', 'watch', 'token', 'unwatch'],
-  boolean: ['org', 'ratelimit'],
+  boolean: ['enterprise', 'org', 'ratelimit'],
   alias: {
+    e: 'enterprise',
     g: 'get',
     i: 'ignore',
     o: 'org',
