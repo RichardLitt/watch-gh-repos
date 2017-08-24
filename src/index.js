@@ -117,11 +117,13 @@ module.exports = function sortFunctions (opts) {
         if (data.length === 0) {
           throw new Error("Not a valid GitHub user")
         }
-        return
+      })
+      .catch((err) => {
+        throw new Error(`Unable to validate ${val}`, err)
       })
       .then(() => githubRepos(val, {token}))
       .catch((err) => {
-        console.log(`Unable to get ${val}'s GitHub repositories`, err)
+        throw new Error(`Unable to get ${val}'s GitHub repositories`, err)
       })
       .map((data) => {
         return sortOpts(opts, data.full_name)
