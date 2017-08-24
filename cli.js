@@ -8,12 +8,7 @@ const _ = require('lodash')
 const gitconfig = require('gitconfiglocal')
 const pify = require('pify')
 const ghauth = pify(require('ghauth'))
-const authOptions = {
-  configName: 'watch-gh-repos',
-  note: 'Watch, unwatch, or ignore GitHub repositories',
-  userAgent: 'github.com/RichardLitt/watch-gh-repos',
-  scopes: ['repo', 'user', 'notifications']
-}
+const lib = require('./src/lib.js')
 
 const cli = meow([`
   Usage
@@ -21,6 +16,7 @@ const cli = meow([`
 
   Options
     -g, --get Get repo watching details
+    -e, --enterprise A different GitHub enterprise endpoint
     -i, --ignore Ignore notifications from a repository
     -o, --org Specify all repositories from an organization or user
     -r, --ratelimit Skip checks making sure GitHub repo is valid (Skips 1 hit per repo)
@@ -35,6 +31,9 @@ const cli = meow([`
     $ watch-gh-repos RichardLitt/watch-gh-repos
     Watched: RichardLitt/watch-gh-repos
 
+    $ watch-gh-repos RichardLittCorp/watch-gh-repos -e https://github.net/api/v3 -t <token>
+    Watched: RichardLittCorp/watch-gh-repos
+
     $ watch-gh-repos --unwatch RichardLitt/watch-gh-repos
     Unwatched: RichardLitt/watch-gh-repos
 
@@ -46,6 +45,7 @@ const cli = meow([`
   boolean: ['org', 'ratelimit'],
   alias: {
     g: 'get',
+    e: 'enterprise',
     i: 'ignore',
     o: 'org',
     t: 'token',
@@ -55,14 +55,13 @@ const cli = meow([`
   }
 })
 
-
-
-function noOpts (opts) {
-  return _.isEmpty(_.filter(opts, (opt, key) => {
-    if (key !== 't' && key !== 'token' && opt) {
-      return opt
-    }
-  }))
+const authOptions = {
+  configName: (cli.flags.e) ? 'watch-ghe-repos' : 'watch-gh-repos',
+  note: 'Watch, unwatch, or ignore GitHub repositories',
+  userAgent: (cli.flags.e) ? 'watch-ghe-repos' : 'watch-gh-repos',
+  scopes: ['repo', 'user', 'notifications'],
+  authURL: (cli.flags.e) ? cli.flags.e + '/authorizations' : null,
+  promptName: (cli.flags.e) ? 'GitHub Enterprise' : null
 }
 
 function getResponse (opts) {
@@ -74,6 +73,16 @@ function getResponse (opts) {
       console.log(data)
     }
   })
+}
+
+function getRepoFromConfig () {
+  return pify(gitconfig)(process.cwd())
+    .then(config => {
+      if (config && config.remote && config.remote.origin && config.remote.origin.url) {
+        var url = config.remote.origin.url
+        return url.match(/([^/:]+\/[^/.]+)(\.git)?$/)[1]
+      }
+    })
 }
 
 Promise.resolve().then(() => {
@@ -89,23 +98,19 @@ Promise.resolve().then(() => {
 }).then((token) => {
   cli.flags.token = token || cli.flags.token // Env set in index
 
-  if (cli.input.length === 0 && noOpts(cli.flags)) {
-    return pify(gitconfig)(process.cwd())
-    .then(config => {
-      if (config && config.remote && config.remote.origin && config.remote.origin.url) {
-        var url = config.remote.origin.url
-        return url.match(/([^/:]+\/[^/.]+)(\.git)?$/)[1]
-      }
-    }).then((res) => {
+  if (cli.input.length === 0 && lib.noOpts(cli.flags)) {
+    return getRepoFromConfig().then((res) => {
       cli.flags['get'] = res
-      getResponse(cli.flags)
+      return cli.flags
     })
-  } else if (cli.input.length === 1 && noOpts(cli.flags)) {
-    cli.flags['get'] = cli.input[0]
-    return getResponse(cli.flags)
   } else {
-    return getResponse(cli.flags)
+    if (cli.input.length === 1 && lib.noOpts(cli.flags)) {
+      cli.flags['get'] = cli.input[0]
+    }
+    return cli.flags
   }
+}).then(() => {
+  getResponse(cli.flags)
 })
 
 

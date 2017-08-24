@@ -13,7 +13,8 @@ module.exports = function sortFunctions (opts) {
   // TODO Throw error if wrong token specified
   // TODO Does this have to be in here? Would be good if I could export the individual functions
   const gh = new Octokat({
-    token: token
+    token: token,
+    rootURL: opts.e
   })
 
   // Could probably be extracted into it's own module
@@ -112,7 +113,7 @@ module.exports = function sortFunctions (opts) {
     // Figure out where to grab the key from
     var val = checkDupeOps(opts)
     // Get all repositories
-    return Promise.resolve(getGithubUser(val, {token}))
+    return Promise.resolve(getGithubUser(val, {token, endpoint: opts.e}))
       .then((data) => {
         if (data.length === 0) {
           throw new Error("Not a valid GitHub user")
