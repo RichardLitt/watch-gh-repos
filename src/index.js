@@ -7,6 +7,7 @@ const Octokat = require('octokat')
 
 module.exports = function sortFunctions (opts) {
   const token = opts.token || process.env.WATCH_GH_REPOS
+
   var validOpts = null
 
   // TODO Throw error if wrong token specified
@@ -20,7 +21,7 @@ module.exports = function sortFunctions (opts) {
     if (opts.ratelimit) {
       return repo
     }
-    return gh.repos(repo).fetch()
+    return Promise.resolve(gh.repos(repo).fetch())
     .then((data) => data.fullName)
     .catch((err) => {
       throw new Error(`${repo} is not a valid GitHub repo!`)
@@ -31,7 +32,7 @@ module.exports = function sortFunctions (opts) {
     return Promise.resolve(isGitHubRepo(repo))
     .then((repo) => gh.repos(repo).subscription.fetch())
     .catch((err) => {
-      throw new Error('Unable to get repo statistics')
+      throw new Error('Unable to get repo statistics' + err)
     })
   }
 
@@ -111,14 +112,17 @@ module.exports = function sortFunctions (opts) {
     // Figure out where to grab the key from
     var val = checkDupeOps(opts)
     // Get all repositories
-    return Promise.resolve(getGithubUser(val))
+    return Promise.resolve(getGithubUser(val, {token}))
       .then((data) => {
         if (data.length === 0) {
           throw new Error("Not a valid GitHub user")
         }
         return
       })
-      .then(() => githubRepos(val, {'token': token}))
+      .then(() => githubRepos(val, {token}))
+      .catch((err) => {
+        console.log(`Unable to get ${val}'s GitHub repositories`, err)
+      })
       .map((data) => {
         return sortOpts(opts, data.full_name)
       })
