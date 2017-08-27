@@ -2,7 +2,7 @@
 'use strict'
 
 const meow = require('meow')
-const watchGHRepos = require('./src/index.js')
+const fn = require('./src/index.js')
 const Promise = require('bluebird')
 const _ = require('lodash')
 const gitconfig = require('gitconfiglocal')
@@ -65,14 +65,10 @@ const authOptions = {
 }
 
 function getResponse (opts) {
-  return Promise.resolve().then(() => watchGHRepos(opts))
-  .then((data) => {
-    if (_.isArray(data)) {
-      _.forEach(data, (datum) => console.log(datum))
-    } else {
-      console.log(data)
-    }
-  })
+  return Promise.resolve(fn(opts))
+    .then((res) => {
+      lib.logStringOrArray(res)
+    })
 }
 
 function getRepoFromConfig () {

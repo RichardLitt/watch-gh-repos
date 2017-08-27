@@ -8,4 +8,9 @@ function noOpts (opts) {
   }))
 }
 
-module.exports = { noOpts }
+function logStringOrArray (input) {
+  input = (_.isArray(input)) ? input : [input]
+  _.forEach(input, (x) => console.log(x))
+}
+
+module.exports = { noOpts, logStringOrArray }

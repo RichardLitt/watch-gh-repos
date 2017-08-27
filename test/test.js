@@ -18,6 +18,7 @@ test('noOpts will not ignore random bool flag', t => {
   t.is(false, lib.noOpts({random: true}))
 })
 
-
-
-
+// TODO Test the output of console.log
+test('logStringOrArray will send all output to STDOUT', t => {
+  t.is(undefined, lib.logStringOrArray('test'))
+})
