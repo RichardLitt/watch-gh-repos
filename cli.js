@@ -22,7 +22,7 @@ const cli = meow([`
     -r, --ratelimit Skip checks making sure GitHub repo is valid (Skips 1 hit per repo)
     -t, --token A token
     -u, --unwatch Unwatch instead of watch
-    -w, --watch Specify a repo
+    -w, --watch Specify a repo (default)
 
   Examples
     ~/src/RichardLitt/unwatch-gh-repos $ watch-gh-repos
@@ -96,12 +96,12 @@ Promise.resolve().then(() => {
 
   if (cli.input.length === 0 && lib.noOpts(cli.flags)) {
     return getRepoFromConfig().then((res) => {
-      cli.flags['get'] = res
+      cli.flags['watch'] = cli.flags['w'] = res
       return cli.flags
     })
   } else {
     if (cli.input.length === 1 && lib.noOpts(cli.flags)) {
-      cli.flags['get'] = cli.input[0]
+      cli.flags['watch'] = cli.flags['w'] = cli.input[0]
     }
     return cli.flags
   }

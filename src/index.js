@@ -33,6 +33,9 @@ module.exports = function sortFunctions (opts) {
     return Promise.resolve(isGitHubRepo(repo))
     .then((repo) => gh.repos(repo).subscription.fetch())
     .catch((err) => {
+      if (err.status == '404') {
+        return `Currently not watching ${repo}.`
+      }
       throw new Error('Unable to get repo statistics' + err)
     })
   }
@@ -43,9 +46,8 @@ module.exports = function sortFunctions (opts) {
     .then((data) => {
       if (data.ignored) {
         return `Ignored: ${repo}`
-      } else {
-        throw new Error('API failed to return appropriate response.')
       }
+      throw new Error('API failed to return appropriate response.')
     }).catch((err) => {
       console.log('Ignoring error', err)
     })
@@ -97,11 +99,11 @@ module.exports = function sortFunctions (opts) {
     if (!validOpts) { checkDupeOps(opts) }
 
     // Semi-arbitrary order of preference, disallows multiple flags
-    if (opts.i) {
+    if (opts.ignore) {
       return ignoreRepo((repoName) ? repoName : opts.ignore)
-    } else if (opts.u) {
+    } else if (opts.unwatch) {
       return unwatchRepo((repoName) ? repoName : opts.unwatch)
-    } else if (opts.w) {
+    } else if (opts.watch) {
       return watchRepo((repoName) ? repoName : opts.watch)
     } else {
       return getRepo((repoName) ? repoName : opts.get)
