@@ -1,5 +1,7 @@
 # watch-gh-repos
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/RichardLitt/watch-gh-repos.svg)](https://greenkeeper.io/)
+
 > Watch, unwatch, or ignore GitHub repositories
 
 This tool allows you to automatically set the 'Watch this repo' command, normally done through the GitHub.com user interface, programmatically, either from your CLI or from your JavaScript code. This is ideal in cases where you have dozens of repos to watch or unwatch, and don't want to cycle through everything to find them. 
