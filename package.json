@@ -10,14 +10,14 @@
     "gitconfiglocal": "^2.0.1",
     "github-repositories": "^3.0.0",
     "lodash": "^4.17.4",
-    "octokat": "^0.6.3"
+    "octokat": "^0.9.2"
   },
   "bin": {
     "watch-gh-repos": "cli.js"
   },
   "devDependencies": {
-    "ava": "^0.18.2",
-    "standard": "^8.6.0",
+    "ava": "^0.22.0",
+    "standard": "^10.0.3",
     "tape": "^4.6.3"
   },
   "scripts": {
