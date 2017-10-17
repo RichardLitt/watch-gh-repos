@@ -24,10 +24,16 @@
     "test": "ava test/test.js"
   },
   "keywords": [
-    "git",
+    "cli",
     "github",
-    "watch",
+    "github-api",
+    "javascript",
+    "node",
+    "repo",
+    "repostories",
     "unwatch",
+    "watch",
+    "git",
     "ignore",
     "api",
     "repos",
@@ -42,5 +48,7 @@
   "coordinates": [
     52.5172299,
     13.4536486
-  ]
+  ],
+  "homepage": "https://github.com/RichardLitt/watch-gh-repos",
+  "bugs": "https://github.com/RichardLitt/watch-gh-repos/issues"
 }
