@@ -95,10 +95,14 @@ Promise.resolve().then(() => {
   cli.flags.token = token || cli.flags.token // Env set in index
 
   if (cli.input.length === 0 && lib.noOpts(cli.flags)) {
-    return getRepoFromConfig().then((res) => {
-      cli.flags['watch'] = cli.flags['w'] = res
-      return cli.flags
-    })
+    return getRepoFromConfig()
+      .then((res) => {
+        cli.flags['watch'] = cli.flags['w'] = res
+        return cli.flags
+      }).catch((err) => {
+        if (err) {}
+        throw new Error('Error: Unable to find organization! Please specify some options.')
+      })
   } else {
     if (cli.input.length === 1 && lib.noOpts(cli.flags)) {
       cli.flags['watch'] = cli.flags['w'] = cli.input[0]
@@ -107,6 +111,7 @@ Promise.resolve().then(() => {
   }
 }).then(() => {
   getResponse(cli.flags)
+}).catch((err) => {
+  console.log(err.message)
+  cli.showHelp(1)
 })
-
-
