@@ -1,6 +1,6 @@
 {
   "name": "watch-gh-repos",
-  "version": "2.3.0",
+  "version": "2.3.1",
   "description": "Watch, unwatch, or ignore GitHub repositories",
   "main": "src/index.js",
   "dependencies": {
