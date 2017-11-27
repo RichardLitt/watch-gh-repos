@@ -16,7 +16,7 @@
     "watch-gh-repos": "cli.js"
   },
   "devDependencies": {
-    "ava": "^0.23.0",
+    "ava": "^0.24.0",
     "standard": "^10.0.3",
     "tape": "^4.6.3",
     "semantic-release": "^8.2.0"
