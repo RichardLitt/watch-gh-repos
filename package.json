@@ -19,7 +19,7 @@
     "ava": "^0.24.0",
     "standard": "^10.0.3",
     "tape": "^4.6.3",
-    "semantic-release": "^8.2.0"
+    "semantic-release": "^11.0.2"
   },
   "scripts": {
     "test": "ava test/test.js",
