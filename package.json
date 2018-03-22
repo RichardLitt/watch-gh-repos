@@ -10,7 +10,7 @@
     "gitconfiglocal": "^2.0.1",
     "github-repositories": "^3.0.0",
     "lodash": "^4.17.4",
-    "octokat": "^0.9.2"
+    "octokat": "^0.10.0"
   },
   "bin": {
     "watch-gh-repos": "cli.js"
