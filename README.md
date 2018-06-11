@@ -1,6 +1,7 @@
 # watch-gh-repos
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/RichardLitt/watch-gh-repos.svg)](https://greenkeeper.io/)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FRichardLitt%2Fwatch-gh-repos.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FRichardLitt%2Fwatch-gh-repos?ref=badge_shield)
 
 > Watch, unwatch, or ignore GitHub repositories
 
@@ -81,3 +82,6 @@ Small note: If editing the README, please conform to the [standard-readme](https
 ## License
 
 [MIT](LICENSE) © 2017 Richard Littauer
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FRichardLitt%2Fwatch-gh-repos.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FRichardLitt%2Fwatch-gh-repos?ref=badge_large)
