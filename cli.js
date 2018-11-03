@@ -4,7 +4,6 @@
 const meow = require('meow')
 const fn = require('./src/index.js')
 const Promise = require('bluebird')
-const _ = require('lodash')
 const gitconfig = require('gitconfiglocal')
 const pify = require('pify')
 const ghauth = pify(require('ghauth'))

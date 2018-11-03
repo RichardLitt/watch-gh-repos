@@ -1,8 +1,6 @@
 const githubRepos = require('github-repositories')
 const getGithubUser = require('get-github-user')
-const fs = require('fs')
 const Promise = require('bluebird')
-const _ = require('lodash')
 const Octokat = require('octokat')
 
 module.exports = function sortFunctions (opts) {
@@ -18,67 +16,69 @@ module.exports = function sortFunctions (opts) {
   })
 
   // Could probably be extracted into it's own module
-  function isGitHubRepo(repo) {
+  function isGitHubRepo (repo) {
     if (opts.ratelimit) {
       return repo
     }
     return Promise.resolve(gh.repos(repo).fetch())
-    .then((data) => data.fullName)
-    .catch((err) => {
-      throw new Error(`${repo} is not a valid GitHub repo!`)
-    })
+      .then((data) => data.fullName)
+      .catch((err) => {
+        if (err) {
+          throw new Error(`${repo} is not a valid GitHub repo!`, err)
+        }
+      })
   }
 
   function getRepo (repo) {
     return Promise.resolve(isGitHubRepo(repo))
-    .then((repo) => gh.repos(repo).subscription.fetch())
-    .catch((err) => {
-      if (err.status == '404') {
-        return `Currently not watching ${repo}.`
-      }
-      throw new Error('Unable to get repo statistics' + err)
-    })
+      .then((repo) => gh.repos(repo).subscription.fetch())
+      .catch((err) => {
+        if (err.status === '404') {
+          return `Currently not watching ${repo}.`
+        }
+        throw new Error('Unable to get repo statistics' + err)
+      })
   }
 
   function ignoreRepo (repo) {
     return Promise.resolve(isGitHubRepo(repo))
-    .then((repo) => gh.repos(repo).subscription.add({'ignored': true}))
-    .then((data) => {
-      if (data.ignored) {
-        return `Ignored: ${repo}`
-      }
-      throw new Error('API failed to return appropriate response.')
-    }).catch((err) => {
-      console.log('Ignoring error', err)
-    })
+      .then((repo) => gh.repos(repo).subscription.add({ 'ignored': true }))
+      .then((data) => {
+        if (data.ignored) {
+          return `Ignored: ${repo}`
+        }
+        throw new Error('API failed to return appropriate response.')
+      }).catch((err) => {
+        console.log('Ignoring error', err)
+      })
   }
 
   function unwatchRepo (repo) {
     return Promise.resolve(isGitHubRepo(repo))
-    .then((repo) => gh.repos(repo).subscription.remove())
-    .then((data) => {
-      if (data) {
-        return `Unwatched: ${repo}`
-      } else {
-        throw new Error('API failed to return appropriate response.')
-      }
-    }).catch((err) => {
-      throw new Error('Unwatching error', err)
-    })
+      .then((repo) => gh.repos(repo).subscription.remove())
+      .then((data) => {
+        if (data) {
+          return `Unwatched: ${repo}`
+        } else {
+          throw new Error('API failed to return appropriate response.')
+        }
+      }).catch((err) => {
+        throw new Error('Unwatching error', err)
+      })
   }
 
   function watchRepo (repo) {
     return Promise.resolve(isGitHubRepo(repo))
-    .then((repo) => gh.repos(repo).subscription.add({'subscribed': true}))
-    .then((data) => {
-       if (data.subscribed) {
-         return `Watched: ${repo}`
-       } else {
-         throw new Error('API failed to return appropriate response.')
-       }
-    }).catch((err) => {
-      throw new Error(`Failed to watch ${repo}.`, err)
-    })
+      .then((repo) => gh.repos(repo).subscription.add({ 'subscribed': true }))
+      .then((data) => {
+        if (data.subscribed) {
+          return `Watched: ${repo}`
+        } else {
+          throw new Error('API failed to return appropriate response.')
+        }
+      }).catch((err) => {
+        throw new Error(`Failed to watch ${repo}.`, err)
+      })
   }
 
   function checkDupeOps (opts) {
@@ -88,7 +88,7 @@ module.exports = function sortFunctions (opts) {
       if (opts[optNames[i]]) val.push(opts[optNames[i]])
     }
     if (val.length >= 2) {
-      throw new Error("Cannot specify more than one state!")
+      throw new Error('Cannot specify more than one state!')
     }
     validOpts = true
     return val[0]
@@ -100,13 +100,13 @@ module.exports = function sortFunctions (opts) {
 
     // Semi-arbitrary order of preference, disallows multiple flags
     if (opts.ignore) {
-      return ignoreRepo((repoName) ? repoName : opts.ignore)
+      return ignoreRepo((repoName) || opts.ignore)
     } else if (opts.unwatch) {
-      return unwatchRepo((repoName) ? repoName : opts.unwatch)
+      return unwatchRepo((repoName) || opts.unwatch)
     } else if (opts.watch) {
-      return watchRepo((repoName) ? repoName : opts.watch)
+      return watchRepo((repoName) || opts.watch)
     } else {
-      return getRepo((repoName) ? repoName : opts.get)
+      return getRepo((repoName) || opts.get)
     }
   }
 
@@ -115,16 +115,16 @@ module.exports = function sortFunctions (opts) {
     // Figure out where to grab the key from
     var val = checkDupeOps(opts)
     // Get all repositories
-    return Promise.resolve(getGithubUser(val, {token, endpoint: opts.e}))
+    return Promise.resolve(getGithubUser(val, { token, endpoint: opts.e }))
       .then((data) => {
         if (data.length === 0) {
-          throw new Error("Not a valid GitHub user")
+          throw new Error('Not a valid GitHub user')
         }
       })
       .catch((err) => {
         throw new Error(`Unable to validate ${val}`, err)
       })
-      .then(() => githubRepos(val, {token}))
+      .then(() => githubRepos(val, { token }))
       .catch((err) => {
         throw new Error(`Unable to get ${val}'s GitHub repositories`, err)
       })
