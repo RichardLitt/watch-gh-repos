@@ -4,12 +4,12 @@
   "description": "Watch, unwatch, or ignore GitHub repositories",
   "main": "src/index.js",
   "dependencies": {
-    "bluebird": "^3.5.0",
-    "get-github-user": "^0.2.0",
+    "bluebird": "^3.5.2",
+    "get-github-user": "^0.2.1",
     "ghauth": "^3.2.1",
-    "gitconfiglocal": "^2.0.1",
+    "gitconfiglocal": "^2.0.2",
     "github-repositories": "^3.0.0",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.11",
     "octokat": "^0.10.0"
   },
   "bin": {
@@ -17,9 +17,9 @@
   },
   "devDependencies": {
     "ava": "^0.25.0",
-    "semantic-release": "^15.0.0",
+    "semantic-release": "^15.10.7",
     "standard": "^12.0.1",
-    "tape": "^4.6.3"
+    "tape": "^4.9.1"
   },
   "scripts": {
     "lint": "standard",
