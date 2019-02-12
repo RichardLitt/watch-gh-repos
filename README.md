@@ -1,11 +1,10 @@
 # watch-gh-repos
 
 [![Greenkeeper badge](https://badges.greenkeeper.io/RichardLitt/watch-gh-repos.svg)](https://greenkeeper.io/)
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FRichardLitt%2Fwatch-gh-repos.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FRichardLitt%2Fwatch-gh-repos?ref=badge_shield)
 
 > Watch, unwatch, or ignore GitHub repositories
 
-This tool allows you to automatically set the 'Watch this repo' command, normally done through the GitHub.com user interface, programmatically, either from your CLI or from your JavaScript code. This is ideal in cases where you have dozens of repos to watch or unwatch, and don't want to cycle through everything to find them. 
+This tool allows you to automatically set the 'Watch this repo' command, normally done through the GitHub.com user interface, programmatically, either from your CLI or from your JavaScript code. This is ideal in cases where you have dozens of repos to watch or unwatch, and don't want to cycle through everything to find them.
 
 ## Install
 
@@ -36,7 +35,7 @@ watchGHRepos({'watch': 'RichardLitt/watch-gh-repos', 'token': someToken})
 
 ### CLI
 
-You will need a token. You can pass this token in through the command line using the `--token` flag, or by setting it in your env as `WATCH_GH_REPOS`. This token needs the scopes `notifications` and `repos` to be enabled.
+**You will need a token.** You can pass this token in through the command line using the `--token` flag, or by setting it in your env as `WATCH_GH_REPOS`. This token needs the scopes `notifications` and `repos` to be enabled.
 
 #### Install
 
@@ -60,6 +59,8 @@ Options
   -w, --watch Specify a repo
 
 Examples
+  $ export WATCH_GITHUB_REPOS='19shfds0' # valid  github token
+
   ~/src/RichardLitt/unwatch-gh-repos $ watch-gh-repos
   Watched: RichardLitt/unwatch-gh-repos
 
