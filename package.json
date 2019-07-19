@@ -9,7 +9,7 @@
     "ghauth": "^3.2.1",
     "gitconfiglocal": "^2.0.2",
     "github-repositories": "^3.0.0",
-    "lodash": "^4.17.11",
+    "lodash": "4.17.14",
     "octokat": "^0.10.0"
   },
   "bin": {
