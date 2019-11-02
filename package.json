@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "ava": "^0.25.0",
-    "semantic-release": "^15.10.7",
+    "semantic-release": "^15.13.30",
     "standard": "^13.0.1",
     "tape": "^4.9.1"
   },
