@@ -4,7 +4,7 @@
   "description": "Watch, unwatch, or ignore GitHub repositories",
   "main": "src/index.js",
   "dependencies": {
-    "bluebird": "^3.5.2",
+    "bluebird": "^3.7.2",
     "get-github-user": "^1.0.0",
     "ghauth": "^3.2.1",
     "gitconfiglocal": "^2.0.2",
