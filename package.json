@@ -19,7 +19,7 @@
     "ava": "^0.25.0",
     "semantic-release": "^15.10.7",
     "standard": "^13.0.1",
-    "tape": "^5.0.0"
+    "tape": "^5.0.1"
   },
   "scripts": {
     "lint": "standard",
