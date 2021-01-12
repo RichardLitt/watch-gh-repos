@@ -55,6 +55,7 @@ const cli = meow([`
 })
 
 const authOptions = {
+  clientId: 'bfec45dffc45ea593ead',
   configName: (cli.flags.e) ? 'watch-ghe-repos' : 'watch-gh-repos',
   note: 'Watch, unwatch, or ignore GitHub repositories',
   userAgent: (cli.flags.e) ? 'watch-ghe-repos' : 'watch-gh-repos',
@@ -76,6 +77,8 @@ function getRepoFromConfig () {
       if (config && config.remote && config.remote.origin && config.remote.origin.url) {
         var url = config.remote.origin.url
         return url.match(/([^/:]+\/[^/.]+)(\.git)?$/)[1]
+      } else {
+        console.log('Unable to get remote.')
       }
     })
 }
